@@ -1,6 +1,5 @@
 const Book = require('../models/book');
 const Joi = require('joi');
-const { validationResult } = require('express-validator');
 
 // Валідація книги
 function validateBook(book) {
@@ -9,7 +8,6 @@ function validateBook(book) {
     author: Joi.string().required(),
   });
 
-  console.log(book);
   return schema.validate(book);
 }
 
@@ -45,10 +43,11 @@ exports.getBookById = async (req, res) => {
 // Додавання книги з валідацією тіла запиту
 exports.addBook = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    console.log(errors);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    console.log(req.body);
+    const {error, value} = validateBook(req.body);
+
+    if (error) {
+      return res.status(400).json({ errors: error });
     }
 
     const { title, author } = req.body;
@@ -63,9 +62,9 @@ exports.addBook = async (req, res) => {
 // Оновлення книги за id
 exports.updateBook = async (req, res) => {
   try {
-    const errors = validationResult(req);
+    const {error, value} = validateBook(req.body);
     
-    if (!errors.isEmpty()) {
+    if (error) {
       return res.stsatus(400).json({ errors: errors.array() });
     }
 
