@@ -43,7 +43,6 @@ exports.getBookById = async (req, res) => {
 // Додавання книги з валідацією тіла запиту
 exports.addBook = async (req, res) => {
   try {
-    console.log(req.body);
     const {error, value} = validateBook(req.body);
 
     if (error) {
